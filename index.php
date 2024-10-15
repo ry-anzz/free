@@ -63,12 +63,12 @@
         </a>
         
         <a
-          href="components/paciente.php"
+          href="components/pacientes.php"
           class="nav-link"
           target="contentFrame"
-          data-section="paciente" 
+          data-section="pacientes" 
           class="nav-link"
-           onclick="showSection('paciente')"
+           onclick="showSection('pacientes')"
         >
           <i class="fas fa-users" id="icone"></i> Pacientes
         </a>
