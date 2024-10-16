@@ -67,10 +67,10 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    color: #155724;
+    color: #003B1B;
     padding: 20px;
     border-radius: 10px;
-    box-shadow: 0 5px 15px rgb(0, 0, 0);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.368);
     z-index: 1000;
     max-width: 80%;
     text-align: center;
@@ -84,6 +84,6 @@
     border: none;
     font-size: 16px;
     cursor: pointer;
-    color: #155724;
+    color: #003B1B;
     font-weight: bold;
 }

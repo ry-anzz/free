@@ -4,29 +4,42 @@ include('../scripts/conexao.php');
 $message = ''; // Inicializa a variável de mensagem
 
 if (isset($_POST['avaliar'])) {
-    $nome = $_POST['nome'];
-    $idade = $_POST['idade'];
-    $patologia = $_POST['patologia'];
-    $telefone = $_POST['telefone'];
-    
-    $sql = "INSERT INTO pacientes (nome, idade, patologia, telefone) VALUES ('$nome', '$idade', '$patologia', '$telefone')";
-    $resultado = mysqli_query($conexao, $sql);
+    // Sanitização e validação dos inputs
+    $nome = trim($_POST['nome']);
+    $idade = filter_var($_POST['idade'], FILTER_SANITIZE_NUMBER_INT);
+    $patologia = trim($_POST['patologia']);
+    $telefone = filter_var($_POST['telefone'], FILTER_SANITIZE_STRING);
 
-    if ($resultado) {
-        $message = "Registro realizado com sucesso";
-    } else {
-        // Captura qualquer erro de SQL
-        $erro = mysqli_error($conexao);
-        
-        // Verifica se o erro é de duplicata
-        if (strpos($erro, 'Duplicate entry') !== false) {
-            $message = "Erro: Já existe um paciente cadastrado com o nome '" . htmlspecialchars($nome) . "'.";
+  
+        $stmt = $conexao->prepare("INSERT INTO pacientes (nome, idade, patologia, telefone) VALUES (?, ?, ?, ?)");
+
+        if ($stmt) {
+            // Associa os parâmetros com a query preparada
+            $stmt->bind_param("siss", $nome, $idade, $patologia, $telefone); // 'siss' - string, int, string, string
+
+            // Executa a query
+            if ($stmt->execute()) {
+                $message = "Registro realizado com sucesso";
+            } else {
+                $erro = $stmt->error;
+
+                // Verifica se o erro é de duplicata
+                if (strpos($erro, 'Duplicate entry') !== false) {
+                    $message = "Erro: Já existe um paciente cadastrado com o nome '" . htmlspecialchars($nome) . "'.";
+                } else {
+                    $message = "Erro: " . htmlspecialchars($erro);
+                }
+            }
+
+            // Fecha a statement
+            $stmt->close();
         } else {
-            $message = "Erro: " . htmlspecialchars($erro);
+            $message = "Erro ao preparar a consulta: " . htmlspecialchars($conexao->error);
         }
     }
-}
+
 ?>
+
 
 
 <!DOCTYPE html>
