@@ -87,6 +87,8 @@ if (isset($_POST['avaliar'])) {
     </div>
 </div>
 
+
+
 <?php if ($message): ?>
     <div class='resultado' id='resultado'>
         <?php echo $message; ?>

@@ -5,33 +5,38 @@
     font-optical-sizing: auto;
     font-weight: weight;
     font-style: normal;
+   
 }
 
+h2,p{
+    margin-left: 30px;
+}
 
 .form-group {
     margin-top: 30px;
-    margin-bottom: 90px;
+    margin-bottom: 100px;
 }
 
-.divisor{
+.divisor {
     width: 100%;
     border-bottom: 1px solid #0000002a;
-  
 }
 
 .form-group label {
     display: block;
     margin-bottom: 5px;
+    margin-left: 30px;
     font-weight: bold;
     color: #000000;
     font-size: 14px;
+
 }
 
-.form-group input
-    {
+.form-group input {
     width: 500px;
     padding: 10px;
     box-sizing: border-box;
+    margin-left: 30px;
     border: 1px solid #E5D5D5;
     border-radius: 10px;
     box-shadow: 0px 3px rgba(0, 0, 0, 0.281);
@@ -39,12 +44,12 @@
     color: #000000;
 }
 
-
 .form-group #detalhes {
     width: 500px;
     height: 150px;
     padding: 10px;
     box-sizing: border-box;
+    margin-left: 30px;
     border: 1px solid #E5D5D5;
     box-shadow: 0px 3px rgba(0, 0, 0, 0.281);
     border-radius: 5px;
@@ -52,9 +57,7 @@
     color: #333333;
 }
 
-
 .btn {
-   
     width: 130px;
     height: 50px;
     padding: 12px;
@@ -65,10 +68,22 @@
     font-size: 16px;
     text-align: center;
     cursor: pointer;
-   margin-top: 1%;
-    margin-left: 90%;
+    margin-top: 0px;
+    margin-left: 86%;
 }
 
 .btn:hover {
     background-color: #005326;
+}
+
+/* Estilos para posicionar o iframe */
+#iframe {
+    position: absolute;
+    top: 150px; /* Ajuste conforme necessário */
+    right: 100px; /* Ajuste conforme necessário */
+    width: 500px;
+    height: 680px;
+    border: 1px solid #000;
+    padding: 0px;
+    
 }

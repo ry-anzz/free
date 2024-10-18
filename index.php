@@ -79,7 +79,7 @@
       </a>
     </div>
 
-    <div class="main-content-patrimonio">
+    <div class="main-content">
       <iframe
       class="iframe"
         name="contentFrame"
