@@ -35,14 +35,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 ?>
 
 
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Avaliação</title>
-    <link rel="stylesheet" href="../styles/avaliaca.css">
+    <link rel="stylesheet" href="../styles/avaliacao.css">
+  
 </head>
 <body>
     
@@ -76,26 +76,30 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 </div>
 
                 <button type="submit" class="btn">Avaliar</button>
-</br>
-</br>
-</br>
             </form>
-        </div>
 
-        <!-- Exibe a mensagem de carregamento -->
-        <div id="loading" style="display: none;">Aguarde, processando...</div>
-        
-       
-    
+            <!-- Exibe a mensagem de carregamento -->
+            <div id="loading">Aguarde, processando...</div>
+        </div>
     </div>
 </div>
 
+<!-- Iframe onde a resposta será exibida -->
+<iframe name="iframe" id="iframe" onload="showIframe()"></iframe>
 
 <script>
+    // Função para exibir a mensagem de carregamento
     function showLoading() {
-        document.getElementById('loading').style.display = 'block';
+        document.getElementById('loading').style.display = 'block';  // Exibe a mensagem de carregamento
+        document.getElementById('iframe').style.display = 'none';    // Esconde o iframe durante o carregamento
+    }
+
+    // Função para mostrar o iframe e esconder o carregamento
+    function showIframe() {
+        document.getElementById('loading').style.display = 'none';   // Esconde a mensagem de carregamento
+        document.getElementById('iframe').style.display = 'block';   // Mostra o iframe quando o conteúdo estiver carregado
     }
 </script>
-<iframe name="iframe" id="iframe" ></iframe>
+
 </body>
 </html>

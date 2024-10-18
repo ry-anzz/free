@@ -7,16 +7,27 @@
     font-style: normal;
 }
 
+h2 {
+    font-size: 25pt;
+    margin-left: 30px;
+}
 
-.form-group {
-    margin-top: 30px;
-    margin-bottom: 90px;
+p {
+    margin-top: -20px;
+    margin-left: 30px;
+    font-size: 15pt;
+    color: #9e9e9e;
 }
 
 .divisor {
     width: 100%;
-    border-bottom: 1px solid #0000002a;
+    border-bottom: 1px solid #afafaf4a;
+}
 
+.form-group {
+    margin-top: 30px;
+    margin-bottom: 90px;
+    margin-left: 30px;
 }
 
 .form-group label {
@@ -38,11 +49,9 @@
     color: #000000;
 }
 
-
 .btn {
-
     width: 130px;
-    height: 50px;
+    height: 45px;
     padding: 12px;
     background-color: #003B1B;
     border: none;
@@ -51,39 +60,8 @@
     font-size: 16px;
     text-align: center;
     cursor: pointer;
-    margin-top: 4%;
-    margin-left: 90%;
 }
 
 .btn:hover {
     background-color: #005326;
-}
-
-.resultado {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    color: #003B1B;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.368);
-    z-index: 1000;
-    max-width: 80%;
-    text-align: center;
-}
-
-.close-button {
-    position: absolute;
-    top: 5px;
-    right: 10px;
-    background: none;
-    border: none;
-    font-size: 16px;
-    cursor: pointer;
-    color: #003B1B;
-    font-weight: bold;
 }
