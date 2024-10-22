@@ -4,7 +4,7 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
 // Inclui o arquivo com a função para acessar a API
-include('../api/main.php');
+include('../../api/main.php');
 
 // Inicializa uma variável para armazenar a resposta da API
 $resposta_chatgpt = '';
@@ -41,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Avaliação</title>
-    <link rel="stylesheet" href="../styles/avaliacao.css">
+    <link rel="stylesheet" href="../../styles/avaliacao.css">
   
 </head>
 <body>

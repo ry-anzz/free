@@ -6,7 +6,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../styles/paciente.css">
+    <link rel="stylesheet" href="../../styles/paciente.css">
     <title>Pacientes</title>
 </head>
 <body>
@@ -17,7 +17,7 @@
         <div class="divisor"></div>
 
         <?php
-        include("../scripts/conexao.php");
+        include("../../scripts/conexao.php");
         // Consulta SQL para listar todos os eventos
         $sql = "SELECT * FROM pacientes";
         $result = $conexao->query($sql);

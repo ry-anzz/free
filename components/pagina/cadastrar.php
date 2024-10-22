@@ -1,5 +1,5 @@
 <?php
-include('../scripts/conexao.php');
+include('../../scripts/conexao.php');
 
 $message = ''; // Inicializa a variável de mensagem
 
@@ -48,7 +48,7 @@ if (isset($_POST['avaliar'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cadastrar</title>
-    <link rel="stylesheet" href="../styles/cadastra.css">
+    <link rel="stylesheet" href="../../styles/cadastra.css">
 
 </head>
 <body>
@@ -68,7 +68,7 @@ if (isset($_POST['avaliar'])) {
 
                 <div class="form-group">
                     <label for="idade">Idade</label>
-                    <input type="text" id="idade" name="idade" placeholder="Idade do paciente" required>
+                    <input type="text" id="idade" name="idade" maxlength="3" placeholder="Idade do paciente" required>
                 </div>                         
 
                 <div class="form-group">
@@ -78,7 +78,7 @@ if (isset($_POST['avaliar'])) {
 
                 <div class="form-group">
                     <label for="telefone">Telefone</label>
-                    <input type="text" id="telefone" name="telefone" placeholder="Telefone do paciente" required>
+                    <input type="text" id="telefone" name="telefone" maxlength="11" placeholder="Telefone do paciente" required>
                 </div>
                 
                 <button type="submit" class="btn" name="avaliar">Cadastrar</button>

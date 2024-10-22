@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Evolução do Paciente</title>
-    <link rel="stylesheet" href="../styles/evolucao.css">
+    <link rel="stylesheet" href="../../styles/evolucao.css">
 </head>
 <body>
     <div class="container">

@@ -19,7 +19,7 @@
      
       <nav>
         <a
-          href="components/avaliacao.php"
+          href="components/pagina/avaliacao.php"
           class="nav-link active"
           target="contentFrame"
           data-section="avaliacao" 
@@ -30,7 +30,7 @@
         </a>
 
         <a
-          href="components/cadastrar.php"
+          href="components/pagina/cadastrar.php"
           class="nav-link"
           target="contentFrame"
           data-section="cadastrar" 
@@ -41,7 +41,7 @@
         </a>
 
         <a
-          href="components/conduta.php"
+          href="components/pagina/conduta.php"
           class="nav-link"
           target="contentFrame"
           data-section="conduta" 
@@ -52,7 +52,7 @@
         </a>
         
         <a
-          href="components/evolucao.php"
+          href="components/pagina/evolucao.php"
           class="nav-link"
           target="contentFrame"
           data-section="evolucao" 
@@ -63,7 +63,7 @@
         </a>
         
         <a
-          href="components/pacientes.php"
+          href="components/pagina/pacientes.php"
           class="nav-link"
           target="contentFrame"
           data-section="pacientes" 
@@ -74,7 +74,7 @@
         </a>
         
       </nav>
-      <a href="components/login.php" class="logout">
+      <a href="components/login/login.php" class="logout">
         <i class="fas fa-sign-out-alt"></i> Sair
       </a>
     </div>
@@ -83,7 +83,7 @@
       <iframe
       class="iframe"
         name="contentFrame"
-        src="components/avaliacao.php"
+        src="components/pagina/avaliacao.php"
         frameborder="0"
       ></iframe>
     </div>
