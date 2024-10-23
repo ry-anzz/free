@@ -1,3 +1,9 @@
+<?php
+if(!isset($_SESSION)){
+  session_start();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="pt-BR">
   <head>
@@ -73,6 +79,8 @@
           <i class="fas fa-users" id="icone"></i> Pacientes
         </a>
         
+        <h1>BEM VINDO <?php echo $_SESSION['nome'];?></h1>
+
       </nav>
       <a href="components/login/login.php" class="logout">
         <i class="fas fa-sign-out-alt"></i> Sair
