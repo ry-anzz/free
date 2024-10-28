@@ -79,8 +79,6 @@ if(!isset($_SESSION)){
           <i class="fas fa-users" id="icone"></i> Pacientes
         </a>
         
-       BEM VINDO <?php echo $_SESSION['nome'];?>
-
       </nav>
       <a href="components/login/login.php" class="logout">
         <i class="fas fa-sign-out-alt"></i> Sair

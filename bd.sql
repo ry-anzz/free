@@ -6,7 +6,9 @@ CREATE TABLE fisioterapeutas (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nome VARCHAR(100),
     email VARCHAR(100) UNIQUE,
-    senha VARCHAR(255)
+    senha VARCHAR(255),
+    codigo_verificacao VARCHAR(6),    
+    data_expiracao_codigo DATETIME
 );
 
 CREATE TABLE pacientes (
