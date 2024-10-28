@@ -10,7 +10,7 @@ function chatgpt_query($input) {
             ['role' => 'system', 'content' => 'Você é um assistente de fisioterapia.'],
             ['role' => 'user', 'content' => $input],
         ],
-        'max_tokens' => 100,
+        'max_tokens' => 1,
         'temperature' => 0.7,
     ];
 

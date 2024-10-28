@@ -79,7 +79,7 @@ if(!isset($_SESSION)){
           <i class="fas fa-users" id="icone"></i> Pacientes
         </a>
         
-        <h1>BEM VINDO <?php echo $_SESSION['nome'];?></h1>
+       BEM VINDO <?php echo $_SESSION['nome'];?>
 
       </nav>
       <a href="components/login/login.php" class="logout">
