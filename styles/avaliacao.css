@@ -8,6 +8,11 @@
 
 }
 
+html,
+body {
+    height: 100%;
+}
+
 h2 {
     font-size: 25pt;
     margin-left: 30px;
@@ -76,13 +81,13 @@ p {
     font-size: 16px;
     text-align: center;
     cursor: pointer;
-    margin-top: 0px;
     margin-left: 86%;
 }
 
 .btn:hover {
     background-color: #005326;
 }
+
 
 /* Estilos para posicionar o iframe */
 #iframe {

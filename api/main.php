@@ -1,21 +1,21 @@
 <?php
 
 function chatgpt_query($input) {
-    $apiKey = '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';  // Use variáveis de ambiente
+    $apiKey = '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';  // Use variáveis de ambiente
     $url = 'https://api.openai.com/v1/chat/completions';
 
     $data = [
         'model' => 'gpt-3.5-turbo',
         'messages' => [
-            ['role' => 'system', 'content' => 'Você é um assistente de fisioterapia.'],
+            ['role' => 'system', 'content' => 'Você é um assistente de fisioterapia e eu sou fisioterapeuta.'],
             ['role' => 'user', 'content' => $input],
         ],
-        'max_tokens' => 1,
+        'max_tokens' => 4000,
         'temperature' => 0.7,
     ];
 
     $retryCount = 0;
-    $maxRetries = 2;  // Número máximo de tentativas
+    $maxRetries = 3;  // Número máximo de tentativas
     $waitTime = 2;    // Tempo de espera entre tentativas, em segundos
 
     while ($retryCount < $maxRetries) {

@@ -1,46 +1,48 @@
 <?php
 include('../../scripts/conexao.php');
+session_start(); // Inicia a sessão
 
-$message = ''; // Inicializa a variável de mensagem
+$message = '';
+$conduta = $_SESSION['conduta'] ?? ''; // Captura a conduta armazenada na sessão
 
-if (isset($_POST['avaliar'])) {
-    // Sanitização e validação dos inputs
-    $nome = trim($_POST['nome']);
-    $idade = filter_var($_POST['idade'], FILTER_SANITIZE_NUMBER_INT);
-    $patologia = trim($_POST['patologia']);
-    $telefone = filter_var($_POST['telefone'], FILTER_SANITIZE_STRING);
+// Verifica se o formulário foi submetido
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Recebe os dados do paciente
+    $nome = $_POST['nome'] ?? '';
+    $idade = (int)($_POST['idade'] ?? 0);
+    $patologia = $_POST['patologia'] ?? '';
+    $telefone = $_POST['telefone'] ?? '';
 
-  
-        $stmt = $conexao->prepare("INSERT INTO pacientes (nome, idade, patologia, telefone) VALUES (?, ?, ?, ?)");
+    // Verifica se o nome do paciente já existe no banco de dados
+    $nome_normalizado = trim(strtolower($nome)); // Normaliza o nome para comparação
+    $stmt = $conexao->prepare("SELECT COUNT(*) FROM pacientes WHERE LOWER(nome) = ?");
+    $stmt->bind_param("s", $nome_normalizado);
+    $stmt->execute();
+    $stmt->bind_result($count);
+    $stmt->fetch();
+    $stmt->close();
 
+    if ($count > 0) {
+        $message = "O nome do paciente já está cadastrado.";
+    } else {
+        // Insere o paciente no banco de dados
+        $stmt = $conexao->prepare("INSERT INTO pacientes (nome, idade, patologia, telefone, conduta) VALUES (?, ?, ?, ?, ?)");
         if ($stmt) {
-            // Associa os parâmetros com a query preparada
-            $stmt->bind_param("siss", $nome, $idade, $patologia, $telefone); // 'siss' - string, int, string, string
-
-            // Executa a query
+            $stmt->bind_param("sisss", $nome, $idade, $patologia, $telefone, $conduta);
             if ($stmt->execute()) {
                 $message = "Registro realizado com sucesso";
+                // Limpa a sessão após o registro
+                unset($_SESSION['conduta']);
             } else {
-                $erro = $stmt->error;
-
-                // Verifica se o erro é de duplicata
-                if (strpos($erro, 'Duplicate entry') !== false) {
-                    $message = "Erro: Já existe um paciente cadastrado com o nome '" . htmlspecialchars($nome) . "'.";
-                } else {
-                    $message = "Erro: " . htmlspecialchars($erro);
-                }
+                $message = "Erro ao cadastrar paciente: " . $stmt->error;
             }
-
-            // Fecha a statement
             $stmt->close();
         } else {
-            $message = "Erro ao preparar a consulta: " . htmlspecialchars($conexao->error);
+            $message = "Erro ao preparar a consulta: " . $conexao->error;
         }
     }
-
+}
 ?>
-
-
 
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -49,10 +51,8 @@ if (isset($_POST['avaliar'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cadastrar</title>
     <link rel="stylesheet" href="../../styles/cadastra.css">
-
 </head>
 <body>
-    
 <div class="main-content-cadastrar">
     <div id="section-cadastrar" class="content-section">
         <h2>Cadastrar paciente</h2>
@@ -60,22 +60,19 @@ if (isset($_POST['avaliar'])) {
         <div class="divisor"></div>
 
         <div class="form-content">
-            <form action="cadastrar.php" method="post">
+            <form action="../../components/pagina/cadastrar.php" method="post">
                 <div class="form-group">
                     <label for="nome">Nome</label>
                     <input type="text" id="nome" name="nome" placeholder="Nome completo do paciente" required>
                 </div>
-
                 <div class="form-group">
                     <label for="idade">Idade</label>
-                    <input type="text" id="idade" name="idade" maxlength="3" placeholder="Idade do paciente" required>
+                    <input type="number" id="idade" name="idade" placeholder="Idade do paciente" required>
                 </div>                         
-
                 <div class="form-group">
                     <label for="patologia">Patologia</label>
                     <input type="text" id="patologia" name="patologia" placeholder="Patologia do paciente" required>
                 </div>
-
                 <div class="form-group">
                     <label for="telefone">Telefone</label>
                     <input type="text" id="telefone" name="telefone" maxlength="11" placeholder="Telefone do paciente" required>
@@ -86,20 +83,16 @@ if (isset($_POST['avaliar'])) {
         </div>
     </div>
 </div>
-
-
-
 <?php if ($message): ?>
     <div class='resultado' id='resultado'>
         <?php echo $message; ?>
         <button class='close-button' onclick='closeMessage()'>X</button>
     </div>
 <?php endif; ?>
-
 <script>
     function closeMessage() {
-        document.getElementById('resultado').style.display = 'none';}
+        document.getElementById('resultado').style.display = 'none';
+    }
 </script>
-
 </body>
 </html>
