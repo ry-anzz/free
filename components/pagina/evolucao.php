@@ -1,53 +1,153 @@
 <?php
-// Inicia a sessão
 session_start();
-
-// Inclui o arquivo de conexão com o banco de dados
 include('../../scripts/conexao.php');
 
 $message = '';
 $conduta = '';
+$atividadesFeitas = []; // Array para armazenar atividades feitas pelo paciente
 
-// Verifica se o formulário de busca foi submetido
+// Verifique se já temos o paciente na sessão
+if (isset($_SESSION['paciente_id'])) {
+    $paciente_id = $_SESSION['paciente_id'];
+    $nome_paciente = $_SESSION['nome_paciente'];
+} else {
+    $paciente_id = null; // Inicializa o ID do paciente como nulo
+}
+
+// Processar busca de paciente
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['procurar'])) {
     $nome_paciente = $_POST['nome'];
     
-    // Consulta no banco de dados para encontrar o paciente pelo nome
+    // Consulta no banco de dados
     $query = "SELECT id, conduta FROM pacientes WHERE nome = ?";
     $stmt = $conexao->prepare($query);
     $stmt->bind_param("s", $nome_paciente);
     $stmt->execute();
     $result = $stmt->get_result();
     
-    // Verifica se o paciente foi encontrado
-    if ($result->num_rows > 0) {
-        $row = $result->fetch_assoc();
-        $conduta = $row['conduta'];
-        $paciente_id = $row['id'];
+    if ($result === false) {
+        $message = "Erro na consulta: " . $conexao->error;
     } else {
-        $message = "Paciente não encontrado.";
+        if ($result->num_rows > 0) {
+            $row = $result->fetch_assoc();
+            $conduta = $row['conduta'];
+            $paciente_id = $row['id']; // Atribui o ID do paciente
+            
+            // Armazena os dados do paciente na sessão
+            $_SESSION['paciente_id'] = $paciente_id;
+            $_SESSION['nome_paciente'] = $nome_paciente;
+            
+            // Consultar atividades já feitas do paciente
+            $queryEvolucao = "SELECT atividades FROM evolucao WHERE paciente_id = ? AND feito = 'sim'";
+            $stmtEvolucao = $conexao->prepare($queryEvolucao);
+            $stmtEvolucao->bind_param("i", $paciente_id);
+            $stmtEvolucao->execute();
+            $resultEvolucao = $stmtEvolucao->get_result();
+            
+            // Armazenar as atividades feitas em um array
+            while ($rowEvolucao = $resultEvolucao->fetch_assoc()) {
+                $atividadesFeitas[] = $rowEvolucao['atividades'];
+            }
+        } else {
+            $message = "Nenhuma conduta encontrada.";
+        }
     }
 }
 
-// Função para dividir a conduta em fases e atividades
+// Função para dividir a conduta em semanas, dias e atividades
 function parseConduta($conduta) {
-    $fases = [];
-    $sections = explode("**Fase", $conduta);
+    $semanas = [];
     
-    foreach ($sections as $section) {
-        if (trim($section)) {
-            $faseInfo = explode(":", $section);
-            if (count($faseInfo) > 1) {
-                $faseNome = trim($faseInfo[0]);
-                $atividades = explode("\n", trim($faseInfo[1]));
-                $fases[$faseNome] = array_map('trim', $atividades);
+    // Dividir a conduta por semanas
+    preg_match_all("/Semana\s+(\d+):\s*(.*?)\s*(?=Semana\s+\d+:|\Z)/s", $conduta, $matches);
+    
+    foreach ($matches[0] as $index => $match) {
+        $semana = "Semana " . trim($matches[1][$index]);
+        $atividadesSemana = trim($matches[2][$index]);
+
+        // Dividir as atividades por dias
+        preg_match_all("/(Segunda-feira|Quarta-feira|Sexta-feira):\s*(.*?)\s*(?=(Segunda-feira|Quarta-feira|Sexta-feira)|\Z)/s", $atividadesSemana, $atividadesMatches);
+
+        foreach ($atividadesMatches[1] as $dayIndex => $dia) {
+            $atividadesDia = trim($atividadesMatches[2][$dayIndex]);
+            $atividades = explode("\n", $atividadesDia);
+            
+            foreach ($atividades as $atividade) {
+                if (preg_match("/Exercício\s+\d+\s+-\s+(.+):\s*(.*)/", $atividade, $exercicioMatch)) {
+                    $exercicio = trim($exercicioMatch[1]);
+                    $detalhes = trim($exercicioMatch[2]);
+
+                    if (!empty($exercicio) && !empty($detalhes)) {
+                        $semanas[$semana][] = [
+                            'dia' => trim($dia),
+                            'exercicio' => $exercicio,
+                            'detalhes' => $detalhes
+                        ];
+                    }
+                }
             }
         }
     }
-    return $fases;
+    return $semanas;
 }
 
-$fases = parseConduta($conduta);
+$semanas = parseConduta($conduta);
+
+// Processar salvamento do progresso
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['salvar_progresso'])) {
+    // Verificar se o paciente_id não é nulo
+    if ($paciente_id !== null) {
+        // Obter atividades feitas do paciente antes de atualizar
+        $queryEvolucao = "SELECT atividades FROM evolucao WHERE paciente_id = ? AND feito = 'sim'";
+        $stmtEvolucao = $conexao->prepare($queryEvolucao);
+        $stmtEvolucao->bind_param("i", $paciente_id);
+        $stmtEvolucao->execute();
+        $resultEvolucao = $stmtEvolucao->get_result();
+        $atividadesFeitasAntigas = [];
+
+        // Armazenar as atividades feitas em um array
+        while ($rowEvolucao = $resultEvolucao->fetch_assoc()) {
+            $atividadesFeitasAntigas[] = $rowEvolucao['atividades'];
+        }
+
+        // Se houver atividades selecionadas
+        if (!empty($_POST['feito'])) {
+            // Atualizar as atividades
+            foreach ($_POST['feito'] as $exercicio) {
+                // Se a atividade não estava anteriormente como "feita", insira-a
+                if (!in_array($exercicio, $atividadesFeitasAntigas)) {
+                    $query = "INSERT INTO evolucao (paciente_id, atividades, feito) VALUES (?, ?, 'sim')";
+                    $stmt = $conexao->prepare($query);
+                    $stmt->bind_param("is", $paciente_id, $exercicio);
+                    $stmt->execute();
+                }
+            }
+
+            // Verificar atividades que foram desmarcadas
+            foreach ($atividadesFeitasAntigas as $atividadeAntiga) {
+                if (!in_array($atividadeAntiga, $_POST['feito'])) {
+                    // Atualizar para "não feito"
+                    $queryAtualizar = "UPDATE evolucao SET feito = 'não' WHERE paciente_id = ? AND atividades = ?";
+                    $stmtAtualizar = $conexao->prepare($queryAtualizar);
+                    $stmtAtualizar->bind_param("is", $paciente_id, $atividadeAntiga);
+                    $stmtAtualizar->execute();
+                }
+            }
+            $message = "Progresso salvo com sucesso!";
+        } else {
+            // Se não há atividades selecionadas, desmarcar todas como "não feito"
+            foreach ($atividadesFeitasAntigas as $atividadeAntiga) {
+                $queryAtualizar = "UPDATE evolucao SET feito = 'não' WHERE paciente_id = ? AND atividades = ?";
+                $stmtAtualizar = $conexao->prepare($queryAtualizar);
+                $stmtAtualizar->bind_param("is", $paciente_id, $atividadeAntiga);
+                $stmtAtualizar->execute();
+            }
+            $message = "Nenhum progresso para salvar.";
+        }
+    } else {
+        $message = "Erro: ID do paciente não encontrado.";
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -56,7 +156,7 @@ $fases = parseConduta($conduta);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Evolução do Paciente</title>
-    <link rel="stylesheet" href="../../styles/evoluca.css">
+    <link rel="stylesheet" href="../../styles/evolucao.css">
 </head>
 <body>
     <div class="main-content-evolucao">
@@ -65,7 +165,6 @@ $fases = parseConduta($conduta);
             <p>Veja a evolução do paciente</p>
             <div class="divisor"></div>
 
-            <!-- Formulário de busca de paciente -->
             <div class="form-content">
                 <form action="evolucao.php" method="post">
                     <div class="form-group">
@@ -76,66 +175,49 @@ $fases = parseConduta($conduta);
                 </form>
             </div>
 
-            <!-- Exibe mensagem se o paciente não foi encontrado -->
             <?php if ($message): ?>
-                <div class="error-message"><?php echo $message; ?></div>
+                <div class="resultado"><?php echo $message; ?></div>
             <?php endif; ?>
 
-            <!-- Exibe a tabela de evolução se a conduta estiver disponível -->
             <?php if ($conduta): ?>
                 <h3>Evolução do Paciente: <?php echo htmlspecialchars($nome_paciente); ?></h3>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Semana</th>
-                            <th>Dia da Semana</th>
-                            <th>Fase</th>
-                            <th>Atividade</th>
-                            <th>Realizado</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php
-                        // Dias da semana
-                        $diasDaSemana = ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado', 'Domingo'];
-                        $atividadesPorSemana = [];
-
-                        // Preenche as atividades por semana e dia
-                        foreach ($fases as $fase => $atividades) {
-                            foreach ($atividades as $atividade) {
-                                // Supondo que cada atividade possa ser realizada em dias específicos (ex: "3 vezes por semana")
-                                for ($semana = 1; $semana <= 4; $semana++) {
-                                    for ($dia = 0; $dia < 7; $dia++) { // Para cada dia da semana
-                                        if (!isset($atividadesPorSemana[$semana])) {
-                                            $atividadesPorSemana[$semana] = [];
-                                        }
-                                        $atividadesPorSemana[$semana][$dia][] = [
-                                            'fase' => $fase,
-                                            'atividade' => trim($atividade),
-                                        ];
-                                    }
-                                }
-                            }
-                        }
-
-                        // Exibe as atividades organizadas por semana e dia
-                        foreach ($atividadesPorSemana as $semana => $dias) {
-                            foreach ($dias as $dia => $atividades) {
-                                foreach ($atividades as $atividade) {
-                                    echo "<tr>";
-                                    echo "<td>Semana $semana</td>";
-                                    echo "<td>" . htmlspecialchars($diasDaSemana[$dia]) . "</td>";
-                                    echo "<td>" . htmlspecialchars($atividade['fase']) . "</td>";
-                                    echo "<td>" . htmlspecialchars($atividade['atividade']) . "</td>";
-                                    echo "<td><input type='checkbox' name='realizado[$semana][$dia][]' value='" . htmlspecialchars($atividade['atividade']) . "'></td>";
-                                    echo "</tr>";
-                                }
-                            }
-                        }
-                        ?>
-                    </tbody>
-                </table>
-                <button type="submit" class="btn">Salvar Evolução</button>
+                
+                <?php if (!empty($semanas)): ?>
+                    <form action="evolucao.php" method="post">
+                        <input type="hidden" name="nome" value="<?php echo htmlspecialchars($nome_paciente); ?>">
+                        <input type="hidden" name="paciente_id" value="<?php echo htmlspecialchars($paciente_id); ?>">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Semana</th>
+                                    <th>Dia</th>
+                                    <th>Exercício</th>
+                                    <th>Detalhes</th>
+                                    <th>Feito</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($semanas as $semana => $atividades): ?>
+                                    <?php foreach ($atividades as $atividade): ?>
+                                        <tr>
+                                            <td><?php echo $semana; ?></td>
+                                            <td><?php echo $atividade['dia']; ?></td>
+                                            <td><?php echo $atividade['exercicio']; ?></td>
+                                            <td><?php echo $atividade['detalhes']; ?></td>
+                                            <td>
+                                                <input type="checkbox" name="feito[]" value="<?php echo htmlspecialchars($atividade['exercicio']); ?>" 
+                                                    <?php echo in_array($atividade['exercicio'], $atividadesFeitas) ? 'checked' : ''; ?>>
+                                            </td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                        <button type="submit" class="btn-salvar" name="salvar_progresso">Salvar</button>
+                    </form>
+                <?php else: ?>
+                    <p>Nenhuma atividade disponível para este paciente.</p>
+                <?php endif; ?>
             <?php endif; ?>
         </div>
     </div>

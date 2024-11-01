@@ -79,6 +79,17 @@ if(!isset($_SESSION)){
           <i class="fas fa-users" id="icone"></i> Pacientes
         </a>
         
+        <a
+          href="components/pagina/estudo.php"
+          class="nav-link"
+          target="contentFrame"
+          data-section="estudo" 
+          class="nav-link"
+           onclick="showSection('estudo')"
+        >
+          <i class="fas fa-search " id="icone"></i> Estudos
+        </a>
+        
       </nav>
       <a href="components/login/login.php" class="logout">
         <i class="fas fa-sign-out-alt"></i> Sair

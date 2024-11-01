@@ -19,20 +19,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $detalhes = $_POST['detalhes'];
 
         // Faz a consulta para a API usando as informações do paciente
-        $resposta_chatgpt = chatgpt_query("
-ChatGPT, gere uma conduta fisioterapêutica baseada em evidências atuais para meu paciente, que é " . $nome . ", tem " . $idade . " anos e sofre de " . $patologia . ". 
-A conduta deve incluir:
-1. Objetivo da fase: descreva brevemente o objetivo de cada fase da conduta.
-2. Etapas: separe as condutas em etapas.
-3. Exercícios detalhados: para cada etapa, liste os exercícios, incluindo:
-   - Nome do exercício
-   - Descrição do exercício
-   - Duração ou número de repetições
-   - Frequência (dias por semana)
-   e me de a resposta dividida na semana e dias, e o que ele tem que fazer em cada dia");
+        $resposta_chatgpt = chatgpt_query("Por favor, forneça a conduta fisioterapêutica para" . $nome . "com " . $idade . "anos e" . $patologia . ", separando por semanas e especificando os dias em que cada exercício deve ser realizado. Use a seguinte formatação:
+            Semana 'numero da semana':
+            dia do exercicio:
+            Exercício 1 - Nome do Exercício: Detalhes do exercício, número de séries e repetições.
+            dia do exercicio:
+            Exercício 2 - Nome do Exercício: Detalhes do exercício.
+            dia do exercicio:
+            Exercício 3 - Nome do Exercício: Detalhes do exercício.");
 
-
-        
         // Armazena a conduta na sessão para passar para a próxima página
         session_start();
         $_SESSION['conduta'] = $resposta_chatgpt;

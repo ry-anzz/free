@@ -24,7 +24,6 @@ CREATE TABLE pacientes (
     FOREIGN KEY (fisioterapeuta_id) REFERENCES fisioterapeutas(id) ON DELETE SET NULL
 );
 
-
 CREATE TABLE evolucao (
     id INT AUTO_INCREMENT PRIMARY KEY,
     paciente_id INT NOT NULL,               -- Refere-se ao ID do paciente

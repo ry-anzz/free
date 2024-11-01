@@ -1,6 +1,3 @@
-
-
-
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -18,17 +15,23 @@
 
         <?php
         include("../../scripts/conexao.php");
-        // Consulta SQL para listar todos os eventos
+        // Consulta SQL para listar todos os pacientes
         $sql = "SELECT * FROM pacientes";
         $result = $conexao->query($sql);
 
         if ($result->num_rows > 0) {
-            // Exibir os eventos em uma tabela
+            // Exibir os pacientes em uma tabela
             echo '<table>';
             echo "<tr><th>Nome</th><th>Idade</th><th>Patologia</th><th>Telefone</th></tr>"; // Cabeçalho da tabela
 
             while ($row = $result->fetch_assoc()) {
-                echo "<tr><td>" . htmlspecialchars($row["nome"]) . "</td><td>" . htmlspecialchars($row["idade"]) . "</td><td>" . htmlspecialchars($row["patologia"]) . "</td><td>" . htmlspecialchars($row["telefone"]) . "</td></tr>";
+                // Adiciona um link em cada nome de paciente
+                echo "<tr>
+                        <td><a href='detalhes_paciente.php?id=" . htmlspecialchars($row["id"]) . "'>" . htmlspecialchars($row["nome"]) . "</a></td>
+                        <td>" . htmlspecialchars($row["idade"]) . "</td>
+                        <td>" . htmlspecialchars($row["patologia"]) . "</td>
+                        <td>" . htmlspecialchars($row["telefone"]) . "</td>
+                      </tr>";
             }
             echo "</table>";
         } else {
