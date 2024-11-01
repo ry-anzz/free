@@ -24,5 +24,7 @@ function showSection(sectionId) {
     }
 }
 
-window.onload = function() {
-    showSection('avaliacao'); }// Chame a função para mostrar a seção 'cadastrar'
+window.onload = function () {
+    showSection('avaliacao');
+}// Chame a função para mostrar a seção 'cadastrar'
+

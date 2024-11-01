@@ -47,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <div class="form-content">
 
             <!-- O formulário envia a resposta para a API -->
-            <form id="avaliacao-form" method="post">
+            <form id="avaliacao-form" method="post" onsubmit="showLoading()">
                 <div class="form-group">
                     <label for="nome">Nome</label>
                     <input type="text" id="nome" name="nome" placeholder="Nome do paciente" required>
@@ -68,7 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <textarea id="detalhes" name="detalhes" placeholder="Detalhes sobre o caso" required></textarea>
                 </div>
 
-                <button type="submit" class="btn">Avaliar</button>
+                <button type="submit" class="btn-avaliar">Avaliar</button>
             </form>
 
             <!-- Exibe a mensagem de erro, se houver -->
@@ -78,22 +78,32 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             <!-- Exibe a resposta da API -->
             <?php if ($resposta_chatgpt): ?>
-                <h3>Resposta do ChatGPT:</h3>
+                <div class="conduta-result">
+                <h3>Conduta:</h3>
                 <p><?php echo nl2br(htmlspecialchars($resposta_chatgpt)); ?></p>
+                </div>
             <?php endif; ?>
         </div>
     </div>
 </div>
 
+<div id="loading" style="display: none;">Aguarde, processando...</div>
 <!-- Botão para salvar a conduta e redirecionar para a página de cadastro -->
-<?php if ($resposta_chatgpt): ?>
-    <div>
-        <form action="../../components/pagina/cadastrar.php" method="post">
-            <input type="hidden" name="conduta" value="<?php echo htmlspecialchars($resposta_chatgpt); ?>">
-            <button type="submit" class="btn">Salvar Conduta</button>
-        </form>
-    </div>
-<?php endif; ?>
+    <?php if ($resposta_chatgpt): ?>
+        <div>
+            <form action="../../components/pagina/cadastrar.php" method="post">
+                <input type="hidden" name="conduta" value="<?php echo htmlspecialchars($resposta_chatgpt); ?>">
+                <button type="submit" class="btn-salvar">Salvar</button>
+            </form>
+        </div>
+    <?php endif; ?>
+
+<script>
+    // Função para exibir a mensagem de carregamento
+    function showLoading() {
+        document.getElementById('loading').style.display = 'block';
+    }
+</script>
 
 </body>
 </html>

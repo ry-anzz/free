@@ -8,9 +8,12 @@
 
 }
 
+
+
 html,
 body {
-    height: 100%;
+    margin: 0;
+    padding-bottom: 10px;
 }
 
 h2 {
@@ -52,7 +55,7 @@ p {
     margin-left: 30px;
     border: 1px solid #E5D5D5;
     border-radius: 10px;
-    box-shadow: 0px 3px rgba(0, 0, 0, 0.281);
+    box-shadow: 0px 3px rgba(0, 0, 0, 0.127);
     font-size: 14px;
     color: #000000;
 }
@@ -70,7 +73,7 @@ p {
     color: #333333;
 }
 
-.btn {
+.btn-avaliar {
     width: 130px;
     height: 50px;
     padding: 12px;
@@ -84,8 +87,42 @@ p {
     margin-left: 86%;
 }
 
-.btn:hover {
+.btn-avaliar:hover {
     background-color: #005326;
+}
+
+.btn-salvar {
+    width: 130px;
+    height: 50px;
+    padding: 12px;
+    background-color: #003B1B;
+    border: none;
+    border-radius: 16px;
+    color: white;
+    font-size: 16px;
+    text-align: center;
+    cursor: pointer;
+    margin-top: 10px;
+    margin-left: 86%;
+}
+
+.btn-salvar:hover {
+    background-color: #005326;
+}
+
+.conduta-result {
+    background-color: #e7f3fe;
+    border-left: 6px solid #003B1B;
+    padding: 15px;
+    margin-top: 20px;
+    border-radius: 4px;
+    margin-left: 30px;
+    color: #003B1B;
+}
+
+.conduta-result p {
+    color: #000000;
+    margin-top: 20px;
 }
 
 
