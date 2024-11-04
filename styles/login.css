@@ -75,10 +75,10 @@ p {
 .forgot-password {
     display: block;
     text-align: right;
-    margin-top: -10px;
+    margin-top: 20px;
     margin-bottom: 20px;
     font-size: 14px;
-    color: #003B1B              ;
+    color: #003B1B;
     text-decoration: none;
     transition: color 0.3s ease;
 }

@@ -38,7 +38,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $mail->Port       = 587;
 
             // Remetente e destinatário
-            $mail->setFrom('fisioavalia4@gmail.com', 'FisioAvalia'); // Seu e-mail
+            $mail->setFrom('fisioavalia4@gmail.com', 'AvaliaFisio'); // Seu e-mail
             $mail->addAddress($email);  // Destinatário
 
             // Conteúdo do e-mail

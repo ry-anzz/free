@@ -7,6 +7,7 @@ CREATE TABLE fisioterapeutas (
     nome VARCHAR(100),
     email VARCHAR(100) UNIQUE,
     senha VARCHAR(255),
+    crefito VARCHAR(20),
     codigo_verificacao VARCHAR(6),
     data_expiracao_codigo DATETIME
 );
@@ -32,3 +33,5 @@ CREATE TABLE evolucao (
     feito ENUM('sim', 'nao') DEFAULT 'nao', 
     FOREIGN KEY (paciente_id) REFERENCES pacientes(id) ON DELETE CASCADE
 );
+insert into fisioterapeutas values(null, 'ryan', 'usuario@gmail.com','usuario',null, null);
+

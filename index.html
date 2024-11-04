@@ -1,0 +1,132 @@
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bem-vindo ao FisioAvalia</title>
+    <style>
+      /* Cores principais */
+      :root {
+        --fundo: #f3fff1;
+        --verde-escuro: #003b1b;
+      }
+
+      /* Estilos básicos */
+      body,
+      html {
+        margin: 0;
+        padding: 0;
+        background-color: var(--fundo);
+        font-family: Arial, sans-serif;
+        color: var(--verde-escuro);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        overflow: hidden;
+      }
+
+      /* Estilo do container principal */
+      .container {
+        text-align: center;
+        position: relative;
+        max-width: 500px;
+        width: 100%;
+        padding: 20px;
+      }
+
+      /* Logo */
+      .logo {
+        width: 400px;
+        height: auto;
+      }
+
+      /* Botões de entrar e cadastrar */
+      .header-links {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+      }
+
+      .header-links a {
+        color: var(--verde-escuro);
+        text-decoration: none;
+        margin-left: 40px;
+        font-weight: bold;
+      }
+
+      .header-links a:hover {
+        color: #009970; /* Um tom de verde mais claro ao passar o mouse */
+      }
+
+      /* Mensagem de boas-vindas */
+      h1 {
+        font-size: 2rem;
+        margin-bottom: 10px;
+      }
+
+      p {
+        font-size: 1.2rem;
+        margin-top: 0;
+        line-height: 1.5;
+      }
+
+      a {
+        color: var(--verde-escuro);
+      }
+      /* Estilo da seção de mensalidade */
+      .mensalidade {
+        margin-top: 20px;
+        padding: 15px;
+        background-color: var(--fundo);
+        border: 2px solid var(--verde-escuro);
+        border-radius: 8px;
+        font-size: 1.2rem;
+        cursor: pointer;
+        text-decoration: none;
+      }
+
+      /* Miniatura em segundo plano */
+      .miniatura-bg {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 80%;
+        max-width: 600px;
+        opacity: 0.1;
+        z-index: -1;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Links de entrar e cadastrar -->
+    <div class="header-links">
+      <a href="components/login/login.php">Entrar</a>
+      <a href="cadastro.html">Cadastrar</a>
+    </div>
+
+    <!-- Conteúdo da página de boas-vindas -->
+    <div class="container">
+      <img src="assets/logo.png" alt="Logo FisioAvalia" class="logo" />
+      <h1>Bem-vindo ao FisioAvalia</h1>
+      <p>
+        Descubra uma nova forma de acompanhar e avaliar a evolução
+        fisioterapêutica de seus pacientes. Nosso sistema oferece uma plataforma
+        completa para registro, acompanhamento e análise de tratamentos, com
+        foco em otimizar o cuidado e garantir melhores resultados.
+      </p>
+
+      <!-- Seção de Mensalidade -->
+      <a href="cadastrar.php"
+        ><div class="mensalidade">Mensalidade: R$59,90</div></a
+      >
+
+      <!-- Imagem de miniatura como plano de fundo -->
+      <img
+        src="assets/miniatura.png"
+        alt="Miniatura do Sistema"
+        class="miniatura-bg"
+      />
+    </div>
+  </body>
+</html>

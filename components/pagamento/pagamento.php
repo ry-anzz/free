@@ -1,110 +1,91 @@
 <?php
-// require 'vendor/autoload.php'; // Instale com "composer require pagarme/pagarme-php"
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $apiKey = 'sk_0dab3a9690f6487d89eb319d993895b2'; // Substitua pela sua chave de API
+    $url = 'https://api.pagar.me/1/transactions'; // Endpoint da API do Pagar.me
 
-// // Insira sua API Key da Pagar.me aqui
-// $pagarme = new PagarMe\Client('SUA_API_KEY');
+    // Verifica se todos os campos necessários estão definidos
+    if (isset($_POST['card_number'], $_POST['card_expiration_month'], $_POST['card_expiration_year'], $_POST['card_cvv'])) {
+        $data = [
+            'amount' => 0100, // Valor em centavos (R$ 10,00)
+            'payment_method' => 'credit_card',
+            'card_number' => $_POST['card_number'],
+            'card_expiration_month' => $_POST['card_expiration_month'],
+            'card_expiration_year' => $_POST['card_expiration_year'],
+            'card_cvv' => $_POST['card_cvv'],
+            'customer' => [
+                'name' => 'Nome do Cliente', // Adicione informações do cliente conforme necessário
+                'document' => '12345678909', // CPF ou CNPJ
+            ],
+        ];
 
-// // Captura os dados do formulário
-// $card_number = $_POST['card_number'];
-// $card_holder_name = $_POST['card_holder_name'];
-// $card_expiration_date = $_POST['card_expiration_date'];
-// $card_cvv = $_POST['card_cvv'];
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            'Content-Type: application/json',
+            'Authorization: ' . $apiKey,
+        ]);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
 
-// // Define o valor fixo de R$59,90 (5990 centavos)
-// $amount = 5990;
+        $response = curl_exec($ch);
+        curl_close($ch);
 
-// try {
-//     // Cria a transação
-//     $transaction = $pagarme->transactions()->create([
-//         'amount' => $amount,
-//         'payment_method' => 'credit_card',
-//         'card_number' => $card_number,
-//         'card_holder_name' => $card_holder_name,
-//         'card_expiration_date' => $card_expiration_date,
-//         'card_cvv' => $card_cvv,
-//         'customer' => [
-//             'external_id' => '1',
-//             'name' => $card_holder_name,
-//             'type' => 'individual',
-//             'country' => 'br',
-//             'documents' => [
-//                 [
-//                     'type' => 'cpf',
-//                     'number' => '00000000000'
-//                 ]
-//             ],
-//             'phone_numbers' => ['+5511999999999'],
-//             'email' => 'cliente@example.com'
-//         ]
-//     ]);
+        // Aqui você pode tratar a resposta da API
+        $responseData = json_decode($response, true);
 
-//     // Verifica se a transação foi bem-sucedida
-//     if ($transaction->status == 'paid') {
-//         echo "Pagamento realizado com sucesso!";
-//     } else {
-//         echo "Falha no pagamento: " . $transaction->status;
-//     }
+        // Adicione esta linha para depuração
+        echo "<pre>";
+        print_r($responseData);
+        echo "</pre>";
 
-// } catch (Exception $e) {
-//     echo "Erro ao processar pagamento: " . $e->getMessage();
-// }
+        // Verifica se a resposta contém a chave 'status'
+        if (isset($responseData['status'])) {
+            if ($responseData['status'] === 'paid') {
+                echo "Pagamento realizado com sucesso!";
+            } else {
+                // Verifica se há erros na resposta
+                if (isset($responseData['errors'])) {
+                    foreach ($responseData['errors'] as $error) {
+                        echo "Erro: " . $error['message'] . " (Parâmetro: " . $error['parameter_name'] . ")\n";
+                    }
+                } else {
+                    echo "Erro ao processar pagamento: resposta inesperada da API.";
+                }
+            }
+        } else {
+            echo "Erro ao processar pagamento: resposta inesperada da API.";
+        }
+    } else {
+        echo "Todos os campos do cartão são obrigatórios.";
+    }
+} else {
+    echo "Método não permitido.";
+}
 ?>
 
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pagamento com Pagar.me</title>
-    <link rel="stylesheet" href="../../styles/pagamento.css">
+    <title>Pagar.me Checkout</title>
 </head>
 <body>
-    <div class="container">
-        <h2>Pagamento com Cartão de Crédito</h2>
-        <form id="paymentForm" action="process_payment.php" method="POST">
-        <div class="card-input">
-    <label for="cardNumber">Número do Cartão</label>
-    <div class="card-number-container">
-        
-        <img id="cardBrand" src=""  class="card-brand-icon">
-        <input type="text" id="cardNumber" name="card_number" placeholder="Número do cartão" required maxlength="16">
-    </div>
-</div>
+    <h1>Pagamento com Pagar.me</h1>
+    <form id="payment-form" method="POST">
+        <label for="card_number">Número do Cartão:</label>
+        <input type="text" name="card_number" required><br>
 
+        <label for="card_expiration_month">Mês de Expiração:</label>
+        <input type="text" name="card_expiration_month" required><br>
 
-            <div class="card-details">
-                <label for="cardExpirationDate">Data de Expiração</label>
-                <input type="text" id="cardExpirationDate" name="card_expiration_date" placeholder="MM/AA" required maxlength="5">
-                
-                <label for="cardCVV">CVV</label>
-                <input type="text" id="cardCVV" name="card_cvv" placeholder="CVV" required maxlength="3">
-            </div>
+        <label for="card_expiration_year">Ano de Expiração:</label>
+        <input type="text" name="card_expiration_year" required><br>
 
-            <label for="cardHolderName">Nome no Cartão</label>
-            <input type="text" id="cardHolderName" name="card_holder_name" placeholder="Nome no cartão" required>
+        <label for="card_cvv">CVV:</label>
+        <input type="text" name="card_cvv" required><br>
 
-            
-            <label for="country">País</label>
-            <select id="country" name="country">
-                <option value="BR">Brasil</option>
-            </select>
-
-            <label for="addressLine1">Endereço</label>
-            <input type="text" id="addressLine1" name="address_line1" placeholder="Endereço Linha 1" required>
-
-            <label for="city">Cidade</label>
-            <input type="text" id="city" name="city" placeholder="Cidade" required>
-
-            <label for="postalCode">Código Postal</label>
-            <input type="text" maxlength="8" id="postalCode" name="postal_code" placeholder="Código postal" required>
-
-            <label for="state">Estado</label>
-            <input type="text" id="state" name="state" placeholder="Estado" required>
-
-            <button type="submit">Pagar R$59,90</button>
-        </form>
-    </div>
-    
-    <script src="../../scripts/pagamento.js"></script>
+        <button type="submit">Pagar</button>
+    </form>
 </body>
 </html>

@@ -10,7 +10,7 @@ if(!isset($_SESSION)){
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Fazer avaliação</title>
-    <link rel="stylesheet" href="styles/inde.css"/>
+    <link rel="stylesheet" href="../../styles/inde.css"/>
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
@@ -20,12 +20,12 @@ if(!isset($_SESSION)){
   
     <div class="sidebar">
       <div class="logo">
-        <img src="assets/logo.png" alt="Logo AvaliaFisio" class="logo-img" />
+        <img src="../../assets/logo.png" alt="Logo AvaliaFisio" class="logo-img" />
       </div>
      
       <nav>
         <a
-          href="components/pagina/avaliacao.php"
+          href="../../components/pagina/avaliacao.php"
           class="nav-link active"
           target="contentFrame"
           data-section="avaliacao" 
@@ -36,7 +36,7 @@ if(!isset($_SESSION)){
         </a>
 
         <a
-          href="components/pagina/cadastrar.php"
+          href="../../components/pagina/cadastrar.php"
           class="nav-link"
           target="contentFrame"
           data-section="cadastrar" 
@@ -47,7 +47,7 @@ if(!isset($_SESSION)){
         </a>
 
         <a
-          href="components/pagina/conduta.php"
+          href="../../components/pagina/conduta.php"
           class="nav-link"
           target="contentFrame"
           data-section="conduta" 
@@ -58,7 +58,7 @@ if(!isset($_SESSION)){
         </a>
         
         <a
-          href="components/pagina/evolucao.php"
+          href="../../components/pagina/evolucao.php"
           class="nav-link"
           target="contentFrame"
           data-section="evolucao" 
@@ -69,7 +69,7 @@ if(!isset($_SESSION)){
         </a>
         
         <a
-          href="components/pagina/pacientes.php"
+          href="../../components/pagina/pacientes.php"
           class="nav-link"
           target="contentFrame"
           data-section="pacientes" 
@@ -80,7 +80,7 @@ if(!isset($_SESSION)){
         </a>
         
         <a
-          href="components/pagina/estudo.php"
+          href="../../components/pagina/estudo.php"
           class="nav-link"
           target="contentFrame"
           data-section="estudo" 
@@ -91,7 +91,7 @@ if(!isset($_SESSION)){
         </a>
         
       </nav>
-      <a href="components/login/login.php" class="logout">
+      <a href="../../index.html" class="logout">
         <i class="fas fa-sign-out-alt"></i> Sair
       </a>
     </div>
@@ -100,15 +100,15 @@ if(!isset($_SESSION)){
       <iframe
       class="iframe"
         name="contentFrame"
-        src="components/pagina/avaliacao.php"
+        src="../../components/pagina/avaliacao.php"
         frameborder="0"
       ></iframe>
     </div>
   
 
-    <script src="scripts/script.js"></script>
-    <script src="scripts/iframeResizer.min.js"></script>
-    <script src="scripts/main.js"></script>
+    <script src="../../scripts/script.js"></script>
+    <script src="../../scripts/iframeResizer.min.js"></script>
+    <script src="../../scripts/main.js"></script>
 
   </body>
 </html>

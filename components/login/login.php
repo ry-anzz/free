@@ -9,7 +9,7 @@ if (isset($_POST['email']) && isset($_POST['senha'])) {
         echo "Preencha o campo Senha";
     } else {
         $email = $conexao->real_escape_string($_POST['email']);
-        $senha = $_POST['senha']; // Não escapamos a senha, pois não é necessária
+        $senha = $_POST['senha'];
 
         // Verifica se o email existe
         $sql_code = "SELECT * FROM fisioterapeutas WHERE email = '$email'";
@@ -26,32 +26,34 @@ if (isset($_POST['email']) && isset($_POST['senha'])) {
                 $_SESSION['email'] = $usuario['email'];
                 $_SESSION['nome'] = $usuario['nome'];
                 
-                header("Location: ../../index.php");
-                exit(); // Sempre bom usar exit após um redirecionamento
+                header("Location: ../../components/pagina/index.php");
+                exit();
             } else {
-                echo "Falha ao logar! Email ou senha incorretos";
+               $mensagem = "Falha ao logar! Email ou senha incorretos";
             }
         } else {
-            echo "Falha ao logar! Email ou senha incorretos";
+            $mensagem = "Falha ao logar! Email ou senha incorretos";
         }
     }
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Login - AvaliaFisio</title>
-    <link rel="stylesheet" href="../../styles/logi.css" />
+    <title>Login - FisioAvalia</title>
+    <link rel="stylesheet" href="../../styles/login.css" />
 </head>
 <body>
     <div class="container">
         <div class="login-box">
-            <img src="../../assets/logo.png" alt="AvaliaFisio Logo" class="logo" />
-            <h2>Bem-Vindo ao AvaliaFisio</h2>
+            <img src="../../assets/logo.png" alt="FisioAvalia Logo" class="logo" />
+            <h2>Bem-Vindo ao FisioAvalia</h2>
             <p>Entre na sua conta</p>
+            <?php if (isset($mensagem)) echo "<p style='color:red;'>$mensagem</p>"; ?>
             <form method="POST" action="">
                 <div class="input-group">
                     <label for="email">Email</label>

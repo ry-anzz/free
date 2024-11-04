@@ -45,3 +45,11 @@ document.getElementById('postalCode').addEventListener('blur', function () {
             });
     }
 })
+
+const cardExpirationInput = document.getElementById('cardExpirationDate');
+cardExpirationInput.addEventListener('input', () => {
+    let value = cardExpirationInput.value;
+    if (value.length === 2 && !value.includes('/')) {
+        cardExpirationInput.value = value + '/';
+    }
+});
