@@ -22,7 +22,6 @@ if(!isset($_SESSION)){
       <div class="logo">
         <img src="../../assets/logo.png" alt="Logo AvaliaFisio" class="logo-img" />
       </div>
-     
       <nav>
         <a
           href="../../components/pagina/avaliacao.php"

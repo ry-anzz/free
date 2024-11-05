@@ -1,5 +1,8 @@
 <?php
-include('../../scripts/conexao.php'); // Inclua o arquivo de conexão com o banco de dados
+
+include('../../scripts/conexao.php');
+
+
 
 // Inicializa a variável para a conduta
 $conduta = '';

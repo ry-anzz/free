@@ -9,7 +9,6 @@
 }
 
 
-
 html,
 body {
     margin: 0;
@@ -28,9 +27,31 @@ p {
     color: #9e9e9e;
 }
 
-.form-group {
+.form-row {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
     margin-top: 30px;
-    margin-bottom: 100px;
+    /* Para acomodar em telas menores */
+}
+
+.form-column {
+    flex: 1;
+    /* Para que as colunas cresçam igualmente */
+    min-width: 300px;
+    /* Largura mínima das colunas */
+    margin-right: 20px;
+    /* Espaço entre as colunas */
+}
+
+.form-column:last-child {
+    margin-right: 0;
+    /* Remove o margin da última coluna */
+}
+
+.form-group {
+    margin-bottom: 30px;
+    /* Ajuste o espaçamento entre os inputs */
 }
 
 .divisor {
@@ -49,7 +70,7 @@ p {
 }
 
 .form-group input {
-    width: 500px;
+    width: 600px;
     padding: 10px;
     box-sizing: border-box;
     margin-left: 30px;
@@ -60,7 +81,7 @@ p {
     color: #000000;
 }
 
-.form-group #detalhes {
+.form-group #queixa {
     width: 500px;
     height: 150px;
     padding: 10px;
@@ -84,7 +105,7 @@ p {
     font-size: 16px;
     text-align: center;
     cursor: pointer;
-    margin-left: 86%;
+    margin-left: 82%;
 }
 
 .btn-avaliar:hover {

@@ -1,6 +1,6 @@
 <?php
 include('../../scripts/conexao.php');
-session_start(); // Inicia a sessão
+session_start(); // Ini if(!isset($_SESSION)){
 
 // Armazena a conduta da sessão, se existir
 $conduta = $_SESSION['conduta'] ?? '';
