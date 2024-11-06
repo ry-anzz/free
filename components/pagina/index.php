@@ -35,17 +35,6 @@ if(!isset($_SESSION)){
         </a>
 
         <a
-          href="../../components/pagina/cadastrar.php"
-          class="nav-link"
-          target="contentFrame"
-          data-section="cadastrar" 
-          class="nav-link"
-           onclick="showSection('cadastrar')"
-        >
-          <i class="fas fa-user" id="icone"></i> Cadastrar Paciente
-        </a>
-
-        <a
           href="../../components/pagina/conduta.php"
           class="nav-link"
           target="contentFrame"
