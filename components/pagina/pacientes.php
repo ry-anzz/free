@@ -14,30 +14,39 @@
         <div class="divisor"></div>
 
         <?php
-        include("../../scripts/conexao.php");
-        // Consulta SQL para listar todos os pacientes
-        $sql = "SELECT * FROM pacientes";
-        $result = $conexao->query($sql);
+session_start();
+if (!isset($_SESSION['id'])) {
+    echo "<p>Erro: ID do fisioterapeuta não encontrado. Por favor, faça login novamente.</p>";
+    exit;
+}
 
-        if ($result->num_rows > 0) {
-            // Exibir os pacientes em uma tabela
-            echo '<table>';
-            echo "<tr><th>Nome</th><th>Idade</th><th>Patologia</th><th>Telefone</th></tr>"; // Cabeçalho da tabela
+$id_fisio = $_SESSION['id'];
+include("../../scripts/conexao.php");
 
-            while ($row = $result->fetch_assoc()) {
-                // Adiciona um link em cada nome de paciente
-                echo "<tr>
-                        <td><a href='detalhes_paciente.php?id=" . htmlspecialchars($row["id"]) . "'>" . htmlspecialchars($row["nome"]) . "</a></td>
-                        <td>" . htmlspecialchars($row["idade"]) . "</td>
-                        <td>" . htmlspecialchars($row["patologia"]) . "</td>
-                        <td>" . htmlspecialchars($row["telefone"]) . "</td>
-                      </tr>";
-            }
-            echo "</table>";
-        } else {
-            echo "<p>Nenhum paciente encontrado.</p>";
-        }
-        ?>
+// Consulta SQL para listar todos os pacientes
+$sql = "SELECT * FROM pacientes WHERE fisioterapeuta_id = $id_fisio";
+$result = $conexao->query($sql);
+
+if ($result->num_rows > 0) {
+    // Exibir os pacientes em uma tabela
+    echo '<table>';
+    echo "<tr><th>Nome</th><th>Idade</th><th>Patologia</th><th>Telefone</th></tr>"; // Cabeçalho da tabela
+
+    while ($row = $result->fetch_assoc()) {
+        // Adiciona um link em cada nome de paciente
+        echo "<tr>
+                <td><a href='detalhes_paciente.php?id=" . htmlspecialchars($row["id"]) . "'>" . htmlspecialchars($row["nome"]) . "</a></td>
+                <td>" . htmlspecialchars($row["idade"]) . "</td>
+                <td>" . htmlspecialchars($row["patologia"]) . "</td>
+                <td>" . htmlspecialchars($row["telefone"]) . "</td>
+              </tr>";
+    }
+    echo "</table>";
+} else {
+    echo "<p>Nenhum paciente encontrado.</p>";
+}
+?>
+
 
     </div>
 </div>

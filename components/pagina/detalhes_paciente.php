@@ -1,5 +1,6 @@
 <?php
 session_start();
+$id_fisio = $_SESSION['id'];    
 include('../../scripts/conexao.php');
 
 $message = '';
@@ -13,9 +14,9 @@ if (isset($_GET['id'])) {
     $paciente_id = (int)$_GET['id']; // Captura o ID da URL
     
     // Buscar dados do paciente
-    $query = "SELECT * FROM pacientes WHERE id = ?";
+    $query = "SELECT * FROM pacientes WHERE fisioterapeuta_id = ? and id = ?";
     $stmt = $conexao->prepare($query);
-    $stmt->bind_param("i", $paciente_id);
+    $stmt->bind_param("ii", $id_fisio ,$paciente_id);
     $stmt->execute();
     $result = $stmt->get_result();
     
@@ -31,21 +32,22 @@ if (isset($_GET['id'])) {
     $message = "Nenhum ID de paciente fornecido na URL."; // Mensagem se nenhum ID estiver presente na URL
 }
 
+
 // Processar a exclusão do paciente
 if (isset($_POST['deletar'])) {
-    $queryDelete = "DELETE FROM pacientes WHERE id = ?";
+    $queryDelete = "DELETE FROM pacientes WHERE fisioterapeuta_id = ? and id = ?";
     $stmtDelete = $conexao->prepare($queryDelete);
-    $stmtDelete->bind_param("i", $paciente_id);
+    $stmtDelete->bind_param("ii", $id_fisio, $paciente_id);
     if ($stmtDelete->execute()) {
         $message = "Paciente deletado com sucesso.";
-        // Redirecionar ou destruir a sessão, se necessário
-        session_destroy();
+        // Redirecionar sem destruir a sessão
         header("Location: ../../components/pagina/pacientes.php"); // Redireciona para a lista de pacientes
         exit();
     } else {
         $message = "Erro ao deletar paciente: " . $conexao->error;
     }
 }
+
 
 // Processar a atualização dos dados do paciente
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['atualizar'])) {
@@ -54,9 +56,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['atualizar'])) {
     $nova_patologia = $_POST['patologia'];
     $novo_telefone = $_POST['telefone'];
 
-    $queryUpdate = "UPDATE pacientes SET nome = ?, idade = ?, patologia = ?, telefone = ? WHERE id = ?";
+    $queryUpdate = "UPDATE pacientes SET nome = ?, idade = ?, patologia = ?, telefone = ? WHERE fisioterapeuta_id = ? and id = ?";
     $stmtUpdate = $conexao->prepare($queryUpdate);
-    $stmtUpdate->bind_param("siisi", $novo_nome, $nova_idade, $nova_patologia, $novo_telefone, $paciente_id);
+    $stmtUpdate->bind_param("siisii", $novo_nome, $nova_idade, $nova_patologia, $novo_telefone, $id_fisio, $paciente_id);
     if ($stmtUpdate->execute()) {
         $message = "Dados do paciente atualizados com sucesso.";
         // Atualiza a sessão se o nome foi alterado

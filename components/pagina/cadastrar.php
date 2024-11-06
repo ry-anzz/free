@@ -1,25 +1,23 @@
 <?php
 include('../../scripts/conexao.php');
-session_start(); // Ini if(!isset($_SESSION)){
+session_start();
 
-// Armazena a conduta da sessão, se existir
+$id_fisio = $_SESSION['id'];
 $conduta = $_SESSION['conduta'] ?? '';
+$message = $_SESSION['message'] ?? '';
+unset($_SESSION['message']);
 
-$message = $_SESSION['message'] ?? ''; // Captura a mensagem da sessão, se existir
-unset($_SESSION['message']); // Limpa a mensagem da sessão após capturá-la
-
-// Verifica se o formulário foi submetido
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['nome'], $_POST['idade'], $_POST['patologia'], $_POST['telefone'])) {
-    // Recebe os dados do paciente
     $nome = $_POST['nome'];
     $idade = (int)$_POST['idade'];
     $patologia = $_POST['patologia'];
     $telefone = $_POST['telefone'];
 
-    // Verifica se o nome do paciente já existe no banco de dados
-    $nome_normalizado = trim(strtolower($nome)); // Normaliza o nome para comparação
-    $stmt = $conexao->prepare("SELECT COUNT(*) FROM pacientes WHERE LOWER(nome) = ?");
-    $stmt->bind_param("s", $nome_normalizado);
+    $nome_normalizado = trim(strtolower($nome));
+    // Verifica se já existe um paciente com o mesmo nome associado ao fisioterapeuta logado
+    $stmt = $conexao->prepare("SELECT COUNT(*) FROM pacientes WHERE LOWER(nome) = ? AND fisioterapeuta_id = ?");
+    $stmt->bind_param("si", $nome_normalizado, $id_fisio);
+
     $stmt->execute();
     $stmt->bind_result($count);
     $stmt->fetch();
@@ -28,17 +26,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['nome'], $_POST['idade
     if ($count > 0) {
         $message = "O nome do paciente já está cadastrado.";
     } else {
-        // Insere o paciente no banco de dados
-        $stmt = $conexao->prepare("INSERT INTO pacientes (nome, idade, patologia, telefone, conduta) VALUES (?, ?, ?, ?, ?)");
+        $stmt = $conexao->prepare("INSERT INTO pacientes (fisioterapeuta_id, nome, idade, patologia, telefone, conduta) VALUES (?, ?, ?, ?, ?, ?)");
         if ($stmt) {
-            $stmt->bind_param("sisss", $nome, $idade, $patologia, $telefone, $conduta);
+            $stmt->bind_param("isisss", $id_fisio, $nome, $idade, $patologia, $telefone, $conduta);
             if ($stmt->execute()) {
-                $_SESSION['message'] = "Registro realizado com sucesso"; // Armazena a mensagem de sucesso na sessão
-
-                // Limpa a conduta da sessão após o cadastro bem-sucedido
+                $_SESSION['message'] = "Registro realizado com sucesso";
                 unset($_SESSION['conduta']);
-                
-                // Redireciona para evitar reenvio e para exibir a mensagem
                 header("Location: cadastrar.php");
                 exit();
             } else {
@@ -51,6 +44,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['nome'], $_POST['idade
     }
 }
 ?>
+
+
+
 
 <!DOCTYPE html>
 <html lang="pt-BR">

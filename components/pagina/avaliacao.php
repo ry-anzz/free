@@ -1,9 +1,8 @@
 <?php
- if(!isset($_SESSION)){
+ 
     session_start();
     $nome = $_SESSION['nome'];
-  }
-
+  
 // Ativa a exibição de erros
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
@@ -35,61 +34,60 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 
         // Faz a consulta para a API usando as informações do paciente
-        $resposta_chatgpt = chatgpt_query("*Ficha de Avaliação Fisioterapêutica*
+        $resposta_chatgpt = chatgpt_query("Ficha de Avaliação Fisioterapêutica
 
-*Dados do Paciente:*
+Dados do Paciente:
 - Nome:" . $nome . "
 - Data da Avaliação:" . $data . "  
 - Idade:" . $idade . "
 - Sexo:" . $sexo . "
 
-*Queixa Principal:*
+Queixa Principal:
  - " . $queixa . "
 
-*História Clínica:*
+História Clínica:
 - Diagnóstico: " . $patologia . "
 - Tempo de sintomas: " . $tempo . "
 - Tratamentos prévios:" . $tratamento . "
 
-*Avaliação Física:*
+Avaliação Física:
 
-1. *Inspeção:*
+Inspeção:
    -" . $inspecao . "
 
-2. *Palpação:*
+Palpação:
    - " . $palpacao . " 
 
-3. *Amplitude de Movimento (ADM):*
+Amplitude de Movimento (ADM):*
    -" . $adm . "
 
-4. *Força Muscular:*
+Força Muscular:
    -" . $forca . " 
 
-5. *Testes Específicos:*
-   - *Testes Positivos:*
+Testes Específicos:*
+   - Testes Positivos:
      -" . $tst_pos . "
-   - *Testes Negativos:*
+   - Testes Negativos:
      -" . $tst_neg . "
 
-*Avaliação Funcional:*
+Avaliação Funcional:
 - [chatgpt, Descreva a capacidade do paciente em realizar atividades diárias e esportivas, se aplicável.]
 
-*Objetivos da Fisioterapia:*
-1. Reduzir a dor e a inflamação.
-2. Melhorar a amplitude de movimento e a força.
-3. Retornar às atividades funcionais sem dor.
+Objetivos da Fisioterapia:
+[chatgpt, Descreva a capacidade do paciente em realizar atividades diárias e esportivas, se aplicável.]
 
-*Plano de Tratamento:*
+
+Plano de Tratamento:
 - [chatgpt, Descreva as intervenções propostas, como eletroterapia, exercícios terapêuticos, alongamentos, e orientações posturais.]
 
-*Observações:*
+Observações:
 - [chatgpt, descreva Qualquer outra informação relevante que possa auxiliar no tratamento.]
  
 E me de a ficha colocando os dados que te passei no mesmo formato que te mandei, colocando cada topico que dei e cada informação que você colocou  
 
-E depois faça uma conduta gere uma conduta fisioterapeutica baseada em evidências atuais para esse paciente
+E depois faça uma conduta gere uma conduta fisioterapeutica baseada em evidências atuais para esse paciente (não coloque enfeites como *)
 
-E me de a conduta separando em topicos e especificando o que deve ser realizado em cada um") . "                                          Assinatura do fisioterapeuta: " . $_SESSION['nome'] ."/". $_SESSION['crefito'];
+E me de a conduta separando em topicos e especificando o que deve ser realizado em cada um") . "Assinatura do fisioterapeuta: " . $_SESSION['nome'] ."/". $_SESSION['crefito'];
 
         // Armazena a conduta na sessão para passar para a próxima página
         $_SESSION['conduta'] = $resposta_chatgpt;
@@ -106,7 +104,7 @@ E me de a conduta separando em topicos e especificando o que deve ser realizado 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Avaliação</title>
-    <link rel="stylesheet" href="../../styles/avaliac.css">
+    <link rel="stylesheet" href="../../styles/avaliacao.css">
     
 </head>
 <body>
@@ -165,7 +163,7 @@ E me de a conduta separando em topicos e especificando o que deve ser realizado 
 
                         <div class="form-group">
                             <label for="palpacao">Palpação</label>
-                            <input type="text" id="palpacao" name="palpacao" placeholder="Dor à palpação na região do tendão do supraespinhal e possíveis pontos de dor referida" required>
+                            <input type="text" id="palpacao" name="palpacao" placeholder="Dor à palpação na região " required>
                         </div>
 
                         <div class="form-group">

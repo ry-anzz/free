@@ -1,8 +1,7 @@
 <?php
-
+session_start();
+$id_fisio = $_SESSION['id'];
 include('../../scripts/conexao.php');
-
-
 
 // Inicializa a variável para a conduta
 $conduta = '';
@@ -13,14 +12,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $nome_paciente = $_POST['nome'] ?? '';
 
     // Prepara e executa a consulta para buscar a conduta do paciente
-    $stmt = $conexao->prepare("SELECT conduta FROM pacientes WHERE nome = ?");
-    $stmt->bind_param("s", $nome_paciente);
+    $stmt = $conexao->prepare("SELECT conduta FROM pacientes WHERE fisioterapeuta_id = ? AND nome = ?");
+    $stmt->bind_param("is", $id_fisio, $nome_paciente);
     $stmt->execute();
     $stmt->bind_result($conduta);
     $stmt->fetch();
     $stmt->close();
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="pt-br">

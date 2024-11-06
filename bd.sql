@@ -33,5 +33,5 @@ CREATE TABLE evolucao (
     feito ENUM('sim', 'nao') DEFAULT 'nao', 
     FOREIGN KEY (paciente_id) REFERENCES pacientes(id) ON DELETE CASCADE
 );
-insert into fisioterapeutas values(null, 'ryan', 'usuario@gmail.com','usuario',null, null);
+
 
