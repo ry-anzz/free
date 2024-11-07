@@ -1,91 +1,61 @@
 <?php
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $apiKey = 'sk_0dab3a9690f6487d89eb319d993895b2'; // Substitua pela sua chave de API
-    $url = 'https://api.pagar.me/1/transactions'; // Endpoint da API do Pagar.me
 
-    // Verifica se todos os campos necessários estão definidos
-    if (isset($_POST['card_number'], $_POST['card_expiration_month'], $_POST['card_expiration_year'], $_POST['card_cvv'])) {
-        $data = [
-            'amount' => 0100, // Valor em centavos (R$ 10,00)
-            'payment_method' => 'credit_card',
-            'card_number' => $_POST['card_number'],
-            'card_expiration_month' => $_POST['card_expiration_month'],
-            'card_expiration_year' => $_POST['card_expiration_year'],
-            'card_cvv' => $_POST['card_cvv'],
-            'customer' => [
-                'name' => 'Nome do Cliente', // Adicione informações do cliente conforme necessário
-                'document' => '12345678909', // CPF ou CNPJ
-            ],
-        ];
+$api_key = "sk_0dab3a9690f6487d89eb319d993895b2";
 
-        $ch = curl_init($url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, [
-            'Content-Type: application/json',
-            'Authorization: ' . $apiKey,
-        ]);
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+// Dados da transação
+$data = [
+    'amount' => 0100,
+    'payment_method' => 'credit_card',
+    'card_number' => '5502092139249915',
+    'card_expiration_date' => '0231',
+    'card_holder_name' => 'Ryan V Oliveira',
+    'card_cvv' => '695',
+    'customer' => [
+        'name' => 'Ryan Vicente de Oliveira',
+        'type' => 'individual',
+        'country' => 'br',
+        'email' => 'vicenteryan385@gmail.com',
+        'documents' => [
+            [
+                'type' => 'cpf',
+                'number' => '44149184801'
+            ]
+        ],
+        'phone_numbers' => ['+5511914648331'],
+        'birthday' => '2004-03-06'
+    ]
+];
 
-        $response = curl_exec($ch);
-        curl_close($ch);
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, "https://api.pagar.me/1/transactions");
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_HTTPHEADER, [
+    "Content-Type: application/json"
+]);
+curl_setopt($ch, CURLOPT_USERPWD, $api_key . ":");
+curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
 
-        // Aqui você pode tratar a resposta da API
-        $responseData = json_decode($response, true);
+// Enviando a requisição e capturando a resposta
+$response = curl_exec($ch);
+curl_close($ch);
 
-        // Adicione esta linha para depuração
-        echo "<pre>";
-        print_r($responseData);
-        echo "</pre>";
+// Verificar a resposta completa para debug
+var_dump($response);
 
-        // Verifica se a resposta contém a chave 'status'
-        if (isset($responseData['status'])) {
-            if ($responseData['status'] === 'paid') {
-                echo "Pagamento realizado com sucesso!";
-            } else {
-                // Verifica se há erros na resposta
-                if (isset($responseData['errors'])) {
-                    foreach ($responseData['errors'] as $error) {
-                        echo "Erro: " . $error['message'] . " (Parâmetro: " . $error['parameter_name'] . ")\n";
-                    }
-                } else {
-                    echo "Erro ao processar pagamento: resposta inesperada da API.";
-                }
-            }
-        } else {
-            echo "Erro ao processar pagamento: resposta inesperada da API.";
-        }
-    } else {
-        echo "Todos os campos do cartão são obrigatórios.";
-    }
-} else {
-    echo "Método não permitido.";
+// Decodificar a resposta JSON
+$resposta = json_decode($response, true);
+
+// Validar se a resposta é um array e se contém o campo 'status'
+if ($resposta === null) {
+    echo "Erro ao decodificar a resposta JSON.";
+    exit;
 }
-?>
 
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pagar.me Checkout</title>
-</head>
-<body>
-    <h1>Pagamento com Pagar.me</h1>
-    <form id="payment-form" method="POST">
-        <label for="card_number">Número do Cartão:</label>
-        <input type="text" name="card_number" required><br>
-
-        <label for="card_expiration_month">Mês de Expiração:</label>
-        <input type="text" name="card_expiration_month" required><br>
-
-        <label for="card_expiration_year">Ano de Expiração:</label>
-        <input type="text" name="card_expiration_year" required><br>
-
-        <label for="card_cvv">CVV:</label>
-        <input type="text" name="card_cvv" required><br>
-
-        <button type="submit">Pagar</button>
-    </form>
-</body>
-</html>
+if (isset($resposta['status']) && $resposta['status'] === 'paid') {
+    echo "Pagamento aprovado!";
+} elseif (isset($resposta['status'])) {
+    echo "Erro no pagamento: " . $resposta['status'];
+} else {
+    echo "Erro inesperado na resposta: ";
+    var_dump($resposta);
+}
